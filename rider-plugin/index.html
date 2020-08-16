@@ -183,7 +183,11 @@ Error message and password prompt
 
 <li>A wanderer</li>
 
+<li>Acknowledgements</li>
+
 <li>Changelog</li>
+
+<li>Draft of 'Introduction'</li>
 
 <li>Example</li>
 
@@ -9644,8 +9648,8 @@ Rider is a small TiddlyWiki plugin that exposes a single macro for transcluding 
 /&gt;&lt;/$reveal&gt;&lt;/$list&gt;&lt;/$set&gt;&lt;/$edit&gt;
 </pre>
 </div>
-<div created="20200701010353793" modified="20200816182757397" title="$:/DefaultTiddlers" type="text/vnd.tiddlywiki">
-<pre>[[Introduction]][[Interacting with the transcluded tiddler]][[Styling]][[Further notes]][[Changelog]]</pre>
+<div created="20200701010353793" modified="20200816210747868" title="$:/DefaultTiddlers" type="text/vnd.tiddlywiki">
+<pre>[[Introduction]][[Interacting with the transcluded tiddler]][[Styling]][[Further notes]][[Changelog]][[Acknowledgements]]</pre>
 </div>
 <div created="20150117152607000" modified="20200815125414218" tags="$:/tags/Macro" title="$:/editions/tw5.com/doc-macros" type="text/vnd.tiddlywiki">
 <pre>\define .concat(1,2,3,4,5) $1$$2$$3$$4$$5$
@@ -10124,7 +10128,7 @@ tr.doc-table-subheading {
 <div title="$:/status/RequireReloadDueToPluginChange">
 <pre>no</pre>
 </div>
-<div list="Introduction [[Interacting with the transcluded tiddler]] Styling [[Further notes]] Changelog" title="$:/StoryList">
+<div list="Introduction [[Interacting with the transcluded tiddler]] Styling [[Further notes]] Changelog Acknowledgements" title="$:/StoryList">
 <pre></pre>
 </div>
 <div plugin-type="info" title="$:/temp/info-plugin" type="application/json">
@@ -10265,6 +10269,15 @@ The above sentence was text belonging to [[Third level rider]]</pre>
 * Even though I don't have a list to list
 * Because it was fun</pre>
 </div>
+<div created="20200816205957081" modified="20200816210719246" tags="" title="Acknowledgements" type="text/vnd.tiddlywiki">
+<pre>This plugin owes its existence to:
+
+* [[Jeremy Ruston|https://github.com/Jermolene]] who created (and continues to create) [[TiddlyWiki|https://tiddlywiki.com]]
+* everyone who contributes their time and expertise at the [[TiddlyWiki Google Group|https://groups.google.com/g/tiddlywiki]]
+
+Thanks for specific feedback on this plugin goes to Google Group users Birthe C and Atronoush.
+</pre>
+</div>
 <div created="20200816152848666" modified="20200816204313813" tags="" title="Changelog" type="text/vnd.tiddlywiki">
 <pre>''16 August 2020 - Rider plugin v0.0.2''
 
@@ -10272,6 +10285,31 @@ The above sentence was text belonging to [[Third level rider]]</pre>
 * Remove negative right margin on `.rider` elements to make styling less brittle
 * Make edit button an edit/cancel toggle and move submit button to below editor
 * Add demonstration of custom CSS styling</pre>
+</div>
+<div created="20200815214430341" draft.of="Introduction" draft.title="Introduction" modified="20200816210836261" tags="" title="Draft of 'Introduction'" type="text/vnd.tiddlywiki">
+<pre>''This plugin is not extensively tested. Back up any data you don't want to lose. That applies even if you aren't going to try this plugin.''
+
+''Rider'' is a small [[TiddlyWiki|https://tiddlywiki.com]] plugin for transcluding tiddlers with some in-place editing capability.
+
+The ''Rider'' plugin exposes one macro: ''rider''. The ''rider'' macro takes one parameter:
+
+;tiddler
+: The title of the tiddler to transclude
+
+!!Example (in a transcluded tiddler)
+
+&lt;&lt;rider Example&gt;&gt;
+
+The &lt;&lt;.def rider&gt;&gt; macro follows your [[TiddlyWiki|https://tiddlywiki.com]]'s [[Control Panel|$:/ControlPanel]] settings as to whether or not to show the Editor Toolbar.
+
+''Further reading:''
+
+* [[Interacting with the transcluded tiddler]]
+* [[Styling]]
+* [[Further notes]]
+* [[Changelog]]
+* [[Acknowledgements]]
+</pre>
 </div>
 <div created="20200815221315347" modified="20200816202941842" title="Example" type="text/vnd.tiddlywiki">
 <pre>''Wikitext:''
@@ -10323,7 +10361,7 @@ Try nesting another &quot;rider&quot;, which //itself// has a &quot;rider.&quot;
 
 ''Mouse:'' Click the title link at the top right of the transcluded tiddler.</pre>
 </div>
-<div created="20200815214430341" modified="20200816202634038" tags="" title="Introduction" type="text/vnd.tiddlywiki">
+<div created="20200815214430341" modified="20200816210836483" tags="" title="Introduction" type="text/vnd.tiddlywiki">
 <pre>''This plugin is not extensively tested. Back up any data you don't want to lose. That applies even if you aren't going to try this plugin.''
 
 ''Rider'' is a small [[TiddlyWiki|https://tiddlywiki.com]] plugin for transcluding tiddlers with some in-place editing capability.
@@ -10339,13 +10377,16 @@ The ''Rider'' plugin exposes one macro: ''rider''. The ''rider'' macro takes one
 
 The &lt;&lt;.def rider&gt;&gt; macro follows your [[TiddlyWiki|https://tiddlywiki.com]]'s [[Control Panel|$:/ControlPanel]] settings as to whether or not to show the Editor Toolbar.
 
+''Further reading:''
+
 * [[Interacting with the transcluded tiddler]]
 * [[Styling]]
 * [[Further notes]]
 * [[Changelog]]
+* [[Acknowledgements]]
 </pre>
 </div>
-<div created="20200816183500381" modified="20200816203853181" tags="" title="Rider demo stylesheet tweaks" type="text/vnd.tiddlywiki">
+<div created="20200816183500381" modified="20200816211854068" tags="" title="Rider demo stylesheet tweaks" type="text/vnd.tiddlywiki">
 <pre>.rider {
     background: #DEB88732;
     padding: 0.4em;
@@ -10379,12 +10420,16 @@ Remove stylesheet tweaks
     &lt;/$list&gt;
 &lt;/$button&gt;</pre>
 </div>
-<div created="20200816183607993" modified="20200816203154191" tags="" title="Styling" type="text/vnd.tiddlywiki">
+<div created="20200816183607993" modified="20200816211848825" tags="" title="Styling" type="text/vnd.tiddlywiki">
 <pre>The ''rider'' plugin has no explicitly-configurable options, but, this being ~TiddlyWiki, users can override CSS rules to suit their preferences.
 
-As a demonstration, the following button toggles the &lt;&lt;.tag '~$:/tags/Stylesheet'&gt;&gt; tag on the tiddler [[Rider demo stylesheet tweaks]] in this wiki:
+As a demonstration, the demo wiki contains the tiddler [[Rider demo stylesheet tweaks]], which gives some sample CSS rules for an alternate look. This tiddler can, of course, be edited to achieve the desired result.
+
+The following button toggles the &lt;&lt;.tag '~$:/tags/Stylesheet'&gt;&gt; tag on [[Rider demo stylesheet tweaks]], to compare default and custom styling: 
 
 {{Style tweaks toggle}}
+
+Here is the example tiddler again:
 
 &lt;&lt;rider Example&gt;&gt;</pre>
 </div>
