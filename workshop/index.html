@@ -11081,7 +11081,7 @@ wikilist-button-foreground: #000</pre>
         },
         &quot;/Users/chris/Downloads/SynologyDrive/Tiddly/PublicTWTW/plugins/omni/.gitignore&quot;: {
             &quot;title&quot;: &quot;/Users/chris/Downloads/SynologyDrive/Tiddly/PublicTWTW/plugins/omni/.gitignore&quot;,
-            &quot;text&quot;: &quot;# Blacklist files/folders in same directory as the .gitignore file\n\n\n# Whitelist some files\n!.gitignore\n!README.md\n\n# Ignore all files named .DS_Store or ending with .log\n**/.DS_Store\n*.code-workspace\n\n# Whitelist plugins/omnibus, but not anything else in plugins?\n!plugins/\nplugins/*\n!plugins/omnibus/&quot;,
+            &quot;text&quot;: &quot;# Blacklist everything in the same dir as .gitignore\n*\n# Whitelist some files\n!.gitignore\n!README.md\n\n# Ignore all files named .DS_Store \n**/.DS_Store\n*.code-workspace\n\n# Whitelist some other stuff\n!plugins/clutterstack_theme/*\n!output/index.html&quot;,
             &quot;type&quot;: &quot;text/plain&quot;
         },
         &quot;$:/plugins/can/omni/utilities/export&quot;: {
@@ -11612,6 +11612,7 @@ wikilist-button-foreground: #000</pre>
             &quot;title&quot;: &quot;$:/plugins/can/tagbrowse/macros/tagbrowse&quot;,
             &quot;created&quot;: &quot;20200817151953467&quot;,
             &quot;singleormulti&quot;: &quot;&quot;,
+            &quot;filter-type&quot;: &quot;any&quot;,
             &quot;modified&quot;: &quot;20200817152818725&quot;,
             &quot;tags&quot;: &quot;$:/tags/Macro&quot;,
             &quot;type&quot;: &quot;text/vnd.tiddlywiki&quot;,
