@@ -879,6 +879,8 @@ Error message and password prompt
 
 <li>$:/status/RequireReloadDueToPluginChange</li>
 
+<li>$:/status/UserName</li>
+
 <li>$:/StoryList</li>
 
 <li>$:/tags/ViewToolbar</li>
@@ -1034,8 +1036,6 @@ Error message and password prompt
 <li>Installed plugins</li>
 
 <li>kdi-demo3-configtid</li>
-
-<li>kdi-demo3-selectionStateTitle</li>
 
 <li>kdi-demo3-storeTitle</li>
 
@@ -11543,7 +11543,7 @@ $:/config/PageControlButtons/Visibility/$(listItem)$
 &lt;/$reveal&gt;
 </pre>
 </div>
-<div created="20200823171534851" creator="chris" modified="20210202194056028" modifier="chris" title="$:/DefaultTiddlers" type="text/vnd.tiddlywiki">
+<div created="20200823171534851" creator="chris" modified="20210202211922431" modifier="Chris" title="$:/DefaultTiddlers" type="text/vnd.tiddlywiki">
 <pre>[[Latest posts]]</pre>
 </div>
 <div created="20150117152607000" modified="20201127023707500" tags="$:/tags/Macro" title="$:/editions/tw5.com/doc-macros" type="text/vnd.tiddlywiki">
@@ -12798,7 +12798,7 @@ Don't forget to back up your data before installing anything.</pre>
         },
         &quot;$:/plugins/can/omniteaser/macros/regexteaser.js&quot;: {
             &quot;title&quot;: &quot;$:/plugins/can/omniteaser/macros/regexteaser.js&quot;,
-            &quot;text&quot;: &quot;/*\\\ntitle: $:/plugins/can/omniteaser/macros/regexteaser.js\ntype: application/javascript\nmodule-type: macro\nMacro to take wikified text and return a teaser made from the first chars characters of its first maxelements html elements. Deals with possible nested elements.\n\\*/\n\n(function(){\n\n/*jslint node: true, browser: true */\n/*global $tw: false */\n\&quot;use strict\&quot;;\n\n/*\nMacro to take wikified text and return a teaser made from the first chars characters of its first maxelements html elements. Deals with possible nested elements.\n*/\n\nexports.name = \&quot;shortenwikified\&quot;;\n\nexports.params = [\n\t{name: \&quot;wikifiedtext\&quot;}, {name: \&quot;chars\&quot;}, {name: \&quot;maxelements\&quot;, default: 1}\n];\n\nconst openClosePattern = /\\&lt;(?&lt;tag&gt;[^\\/\\&gt;]*)( ?.*?)\\&gt;(.*?)\\&lt;\\/\\k&lt;tag&gt;\\&gt;/gms;\nconst emptyTagPairPattern = /\\&lt;(?&lt;tag&gt;[^\\/\\&gt; ]*) ?[^\\/\\&gt;]*?\\&gt;\\&lt;\\/\\k&lt;tag&gt;\\&gt;/gm;\n// const openClosePattern = /\\&lt;(?&lt;tag&gt;[^\\/ ]*?) .*?\\&gt;(.*?)\\&lt;\\/\\k&lt;tag&gt;\\&gt;/gms;\nconst openClosePatternG = /(\\&lt;(?&lt;tag&gt;[^\\/]*?).*?\\&gt;(.*?)\\&lt;\\/\\k&lt;tag&gt;\\&gt;)/gm;\nconst tagsAtEndsPattern = /^\\&lt;(?&lt;tag&gt;[^\\/]*?).*?\\&gt;(.*?)\\&lt;\\/\\k&lt;tag&gt;\\&gt;$/m;\nconst betweenEndTagsPattern = /(?&lt;=\\&lt;(?&lt;tag&gt;[^\\/]*?).*?\\&gt;)(.*?)(?=\\&lt;\\/\\k&lt;tag&gt;\\&gt;)/gm; //only gets rid of one outer set of tags\n\n/*\nRun the macro\n*/\nexports.run = function(wikifiedtext, chars, maxelements) {\n    //console.log(\&quot;wikifiedtext: \&quot;, wikifiedtext);\n    if (wikifiedtext.trim().length == 0) { \n        return \&quot;\&quot;; \n    }\n    var maxchars = parseFloat(chars);\n    const firstElementString = getFirstElements(wikifiedtext, maxelements);\n    //console.log(\&quot;check output of getFirstElements:\&quot;,getFirstElements(wikifiedtext, maxelements) );\n    const splitArr = splitText(firstElementString);\n    //console.log(\&quot;splitText(firstElementString):\&quot;, splitText(firstElementString) );\n    console.log(\&quot;splitArr: \&quot;, splitArr );\n    var countText = getLastIndex(splitArr, maxchars);\n    //console.log(\&quot;gotLastIndex: \&quot;, countText);\n    const lastIndex = countText[1];\n    const total = countText[0];\n    if (total &gt; maxchars) {\n        const zappedArray = countText[2];\n        //console.log(\&quot;zapped: \&quot;, zappedArray);\n        //console.log(\&quot;lastIndex: \&quot;, lastIndex);\n        const outArray = trimLast(zappedArray, lastIndex, total - maxchars);\n        //console.log(\&quot;final array: \&quot; , outArray);\n        var newString = outArray.join(\&quot;\&quot;);\n        //console.log(\&quot;newString: \&quot;,newString);\n        return deleteTrailingTags(newString);\n    } \n    else if (total == 0){\n        //console.log(\&quot;total text chars was 0\&quot;);\n        return \&quot;\&quot;;\n    } else {\n       var countedArray = countText[2];\n       countedArray[lastIndex] = countedArray[lastIndex]+\&quot; (...)\&quot;;\n       return countedArray.join(\&quot;\&quot;);  \n    }\n};\n\nfunction getFirstElements(inString, maxelements) {\n    //console.log(\&quot;getFirstElements matches:\&quot;, inString.match(openClosePattern));\n    //console.log(\&quot;want first \&quot;, maxelements, \&quot; matches.\&quot;);\n    var outArray = [];\n    var match = inString.match(openClosePattern);\n    if (match !== null) {\n        for (let i = 0; i &lt; maxelements; i++) {\n            //console.log(\&quot;now adding match at index \&quot;,i);\n            if (match[i] !== null) {\n                outArray.push(match[i]);\n            }\n        }\n    }\n    //console.log(\&quot;getFirstElements: \&quot;, outArray.join(\&quot;\&quot;));\n    return outArray.join(\&quot;\&quot;);\n};\n\nfunction splitText(inStr) {\n    const rawsplit = inStr.split(/(\\&lt;.*?\\&gt;)/);\n    const result = rawsplit; //.filter(word =&gt; word.length &gt; 0);\n    return result;\n};\n\nfunction isTag(inStr) {\n    //returns true or false\n    const reg = /^\\&lt;.*?\\&gt;$/;\n    return reg.test(inStr); //should test for svg and perhaps other things that have renderable content inside opening tag\n};\n\nfunction getLastIndex(inArray, maxchars) {\n    var tot = 0;\n    var index = 0;\n    var lastIndex = 0;\n    var outArray = []; //inArray; //WATCH OUT -- ASSIGN BY REFERENCE!!\n    for (const element of inArray) {\n        const check = isTag(element);\n        //console.log(\&quot;check \&quot;, element, \&quot; : \&quot;,check);\n        if (check == false) {\n            if (tot &gt; maxchars) {\n                //console.log(\&quot;total maxchars \&quot;, tot, \&quot; has exceeded limit of \&quot;, maxchars, \&quot; at index \&quot;,index);\n                outArray[index] = \&quot;\&quot;;\n            } else {\n                if (element.trim().length == 0 ) { //only whitespace\n                    outArray[index] = \&quot;\&quot;;\n                    lastIndex = index;\n                } else {\n                    outArray[index] = element;\n                    //console.log(\&quot;adding \&quot;, element.length, \&quot; chars to total (previously \&quot;, tot,\&quot;) at index \&quot;, index);\n                    lastIndex = index;\n                    tot += element.length;\n                }\n            }\n        } else if (element == \&quot;&lt;br&gt;\&quot;) {\n            if (tot &gt; maxchars) {\n            //console.log(\&quot;found a &lt;br&gt; after the last needed text\&quot;);\n            outArray[index] = \&quot;\&quot;;\n            } else {\n                outArray[index] = element;\n            }\n        }\n        index += 1;\n    }\n    //console.log(\&quot;tot: \&quot;, tot, \&quot;; maxchars: \&quot;, maxchars);\n    return [tot, lastIndex, outArray];\n};\n\nfunction trimLast(inArray, index, diff) {\n    var outArray = inArray; //This assignment by reference, deliberately. Pass in something that can be changed.\n    var lastEl = outArray[index];\n    //console.log(\&quot;diff: \&quot;, diff);\n    //console.log(\&quot;last text element is \&quot;, lastEl);\n    var lastElTrim = lastEl.substring(0,lastEl.length - diff ) + \&quot; (...)\&quot;;\n    //console.log(\&quot;trimming element to length \&quot;, lastElTrim.length,\&quot; from \&quot;, lastEl.length);\n    //console.log(\&quot;last text element is now \&quot;, lastElTrim);\n    outArray[index] = lastElTrim;\n    return outArray;\n};\n\nfunction deleteTrailingTags(inString) {\n    // Delete empty tag pairs until none remain\n    const reg = emptyTagPairPattern;\n    var reduced = inString;\n    if (reg.test(reduced) == true) {\n        //console.log(\&quot;test is true: reduced is \&quot;, reduced);\n        reduced = reduced.replace(reg,\&quot;\&quot;);\n        reduced = deleteTrailingTags(reduced);\n    } else if (reg.test(reduced) == false) {\n        //console.log(\&quot;test is false: reduced is \&quot;, reduced);\n    }\n    return reduced;\n    };\n\n})();&quot;,
+            &quot;text&quot;: &quot;/*\\\ntitle: $:/plugins/can/omniteaser/macros/regexteaser.js\ntype: application/javascript\nmodule-type: macro\nMacro to take wikified text and return a teaser made from the first chars characters of its first maxelements html elements. Deals with possible nested elements.\n\\*/\n\n(function(){\n\n/*jslint node: true, browser: true */\n/*global $tw: false */\n\&quot;use strict\&quot;;\n\n/*\nMacro to take wikified text and return a teaser made from the first chars characters of its first maxelements html elements. Deals with possible nested elements.\n*/\n\nexports.name = \&quot;shortenwikified\&quot;;\n\nexports.params = [\n\t{name: \&quot;wikifiedtext\&quot;}, {name: \&quot;chars\&quot;}, {name: \&quot;maxelements\&quot;, default: 1}\n];\n\nconst openClosePattern = /\\&lt;(?&lt;tag&gt;[^\\/\\&gt;]*)( ?.*?)\\&gt;(.*?)\\&lt;\\/\\k&lt;tag&gt;\\&gt;/gms;\nconst emptyTagPairPattern = /\\&lt;(?&lt;tag&gt;[^\\/\\&gt; ]*) ?[^\\/\\&gt;]*?\\&gt;\\&lt;\\/\\k&lt;tag&gt;\\&gt;/gm;\n// const openClosePattern = /\\&lt;(?&lt;tag&gt;[^\\/ ]*?) .*?\\&gt;(.*?)\\&lt;\\/\\k&lt;tag&gt;\\&gt;/gms;\nconst openClosePatternG = /(\\&lt;(?&lt;tag&gt;[^\\/]*?).*?\\&gt;(.*?)\\&lt;\\/\\k&lt;tag&gt;\\&gt;)/gm;\nconst tagsAtEndsPattern = /^\\&lt;(?&lt;tag&gt;[^\\/]*?).*?\\&gt;(.*?)\\&lt;\\/\\k&lt;tag&gt;\\&gt;$/m;\nconst betweenEndTagsPattern = /(?&lt;=\\&lt;(?&lt;tag&gt;[^\\/]*?).*?\\&gt;)(.*?)(?=\\&lt;\\/\\k&lt;tag&gt;\\&gt;)/gm; //only gets rid of one outer set of tags\n\n/*\nRun the macro\n*/\nexports.run = function(wikifiedtext, chars, maxelements) {\n    //console.log(\&quot;wikifiedtext: \&quot;, wikifiedtext);\n    if (wikifiedtext.trim().length == 0) { \n        return \&quot;\&quot;; \n    }\n    var maxchars = parseFloat(chars);\n    const firstElementString = getFirstElements(wikifiedtext, maxelements);\n    //console.log(\&quot;check output of getFirstElements:\&quot;,getFirstElements(wikifiedtext, maxelements) );\n    const splitArr = splitText(firstElementString);\n    //console.log(\&quot;splitText(firstElementString):\&quot;, splitText(firstElementString) );\n    //console.log(\&quot;splitArr: \&quot;, splitArr );\n    var countText = getLastIndex(splitArr, maxchars);\n    //console.log(\&quot;gotLastIndex: \&quot;, countText);\n    const lastIndex = countText[1];\n    const total = countText[0];\n    if (total &gt; maxchars) {\n        const zappedArray = countText[2];\n        //console.log(\&quot;zapped: \&quot;, zappedArray);\n        //console.log(\&quot;lastIndex: \&quot;, lastIndex);\n        const outArray = trimLast(zappedArray, lastIndex, total - maxchars);\n        //console.log(\&quot;final array: \&quot; , outArray);\n        var newString = outArray.join(\&quot;\&quot;);\n        //console.log(\&quot;newString: \&quot;,newString);\n        return deleteTrailingTags(newString);\n    } \n    else if (total == 0){\n        //console.log(\&quot;total text chars was 0\&quot;);\n        return \&quot;\&quot;;\n    } else {\n       var countedArray = countText[2];\n       countedArray[lastIndex] = countedArray[lastIndex]+\&quot; (...)\&quot;;\n       return countedArray.join(\&quot;\&quot;);  \n    }\n};\n\nfunction getFirstElements(inString, maxelements) {\n    //console.log(\&quot;getFirstElements matches:\&quot;, inString.match(openClosePattern));\n    //console.log(\&quot;want first \&quot;, maxelements, \&quot; matches.\&quot;);\n    var outArray = [];\n    var match = inString.match(openClosePattern);\n    if (match !== null) {\n        for (let i = 0; i &lt; maxelements; i++) {\n            //console.log(\&quot;now adding match at index \&quot;,i);\n            if (match[i] !== null) {\n                outArray.push(match[i]);\n            }\n        }\n    }\n    //console.log(\&quot;getFirstElements: \&quot;, outArray.join(\&quot;\&quot;));\n    return outArray.join(\&quot;\&quot;);\n};\n\nfunction splitText(inStr) {\n    const rawsplit = inStr.split(/(\\&lt;.*?\\&gt;)/);\n    const result = rawsplit; //.filter(word =&gt; word.length &gt; 0);\n    return result;\n};\n\nfunction isTag(inStr) {\n    //returns true or false\n    const reg = /^\\&lt;.*?\\&gt;$/;\n    return reg.test(inStr); //should test for svg and perhaps other things that have renderable content inside opening tag\n};\n\nfunction getLastIndex(inArray, maxchars) {\n    var tot = 0;\n    var index = 0;\n    var lastIndex = 0;\n    var outArray = []; //inArray; //WATCH OUT -- ASSIGN BY REFERENCE!!\n    for (const element of inArray) {\n        const check = isTag(element);\n        //console.log(\&quot;check \&quot;, element, \&quot; : \&quot;,check);\n        if (check == false) {\n            if (tot &gt; maxchars) {\n                //console.log(\&quot;total maxchars \&quot;, tot, \&quot; has exceeded limit of \&quot;, maxchars, \&quot; at index \&quot;,index);\n                outArray[index] = \&quot;\&quot;;\n            } else {\n                if (element.trim().length == 0 ) { //only whitespace\n                    outArray[index] = \&quot;\&quot;;\n                    lastIndex = index;\n                } else {\n                    outArray[index] = element;\n                    //console.log(\&quot;adding \&quot;, element.length, \&quot; chars to total (previously \&quot;, tot,\&quot;) at index \&quot;, index);\n                    lastIndex = index;\n                    tot += element.length;\n                }\n            }\n        } else if (element == \&quot;&lt;br&gt;\&quot;) {\n            if (tot &gt; maxchars) {\n            //console.log(\&quot;found a &lt;br&gt; after the last needed text\&quot;);\n            outArray[index] = \&quot;\&quot;;\n            } else {\n                outArray[index] = element;\n            }\n        }\n        index += 1;\n    }\n    //console.log(\&quot;tot: \&quot;, tot, \&quot;; maxchars: \&quot;, maxchars);\n    return [tot, lastIndex, outArray];\n};\n\nfunction trimLast(inArray, index, diff) {\n    var outArray = inArray; //This assignment by reference, deliberately. Pass in something that can be changed.\n    var lastEl = outArray[index];\n    //console.log(\&quot;diff: \&quot;, diff);\n    //console.log(\&quot;last text element is \&quot;, lastEl);\n    var lastElTrim = lastEl.substring(0,lastEl.length - diff ) + \&quot; (...)\&quot;;\n    //console.log(\&quot;trimming element to length \&quot;, lastElTrim.length,\&quot; from \&quot;, lastEl.length);\n    //console.log(\&quot;last text element is now \&quot;, lastElTrim);\n    outArray[index] = lastElTrim;\n    return outArray;\n};\n\nfunction deleteTrailingTags(inString) {\n    // Delete empty tag pairs until none remain\n    const reg = emptyTagPairPattern;\n    var reduced = inString;\n    if (reg.test(reduced) == true) {\n        //console.log(\&quot;test is true: reduced is \&quot;, reduced);\n        reduced = reduced.replace(reg,\&quot;\&quot;);\n        reduced = deleteTrailingTags(reduced);\n    } else if (reg.test(reduced) == false) {\n        //console.log(\&quot;test is false: reduced is \&quot;, reduced);\n    }\n    return reduced;\n    };\n\n})();&quot;,
             &quot;type&quot;: &quot;application/javascript&quot;,
             &quot;module-type&quot;: &quot;macro&quot;,
             &quot;creator&quot;: &quot;chris&quot;,
@@ -18865,8 +18865,8 @@ Body: {{$:/config/sq/Stories/story2/fontsize-body}}px
 <div created="20200823171522088" creator="clutterstack" modified="20201126221232966" modifier="clutterstack" title="$:/SiteSubtitle" type="text/vnd.tiddlywiki">
 <pre>Public experimentation TiddlyWiki</pre>
 </div>
-<div created="20200823171513445" creator="clutterstack" modified="20201019182348393" modifier="clutterstack" title="$:/SiteTitle" type="text/vnd.tiddlywiki">
-<pre>Clutterstack Workshop</pre>
+<div created="20200823171513445" creator="clutterstack" modified="20210202194918395" modifier="clutterstack" title="$:/SiteTitle" type="text/vnd.tiddlywiki">
+<pre>[[Clutterstack Workshop|https://clutterstack.github.io/can-tw/workshop/]]</pre>
 </div>
 <div created="20201208142741168" modified="20201208142741168" title="$:/state/addplugins/tab-1342078386">
 <pre>$:/pluginlibrary/can/clutterstack_pluginlibrary</pre>
@@ -19048,7 +19048,10 @@ I use git to track changes in my projects.</pre>
 <div title="$:/status/RequireReloadDueToPluginChange">
 <pre>no</pre>
 </div>
-<div list="[[Latest posts]]" title="$:/StoryList">
+<div created="20210202211914640" creator="C" modified="20210202211915051" modifier="Chri" title="$:/status/UserName">
+<pre>Chris</pre>
+</div>
+<div created="20210202211940947" creator="Chris" list="[[Latest posts]]" modified="20210202211940947" modifier="Chris" title="$:/StoryList">
 <pre></pre>
 </div>
 <div created="20201019182534145" creator="clutterstack" list="$:/core/ui/Buttons/more-tiddler-actions $:/core/ui/Buttons/delete $:/core/ui/Buttons/info $:/core/ui/Buttons/new-here $:/core/ui/Buttons/new-journal-here $:/core/ui/Buttons/clone $:/core/ui/Buttons/export-tiddler $:/core/ui/Buttons/fold $:/core/ui/Buttons/edit $:/core/ui/Buttons/permalink $:/core/ui/Buttons/permaview $:/core/ui/Buttons/open-window $:/core/ui/Buttons/close-others $:/core/ui/Buttons/close $:/core/ui/Buttons/fold-others $:/core/ui/Buttons/fold-bar" modified="20201019182627180" modifier="clutterstack" title="$:/tags/ViewToolbar" type="text/vnd.tiddlywiki">
@@ -19073,7 +19076,7 @@ I use git to track changes in my projects.</pre>
         &quot;$:/themes/can/clutterstack_2020/base&quot;: {
             &quot;title&quot;: &quot;$:/themes/can/clutterstack_2020/base&quot;,
             &quot;tags&quot;: &quot;$:/tags/Stylesheet&quot;,
-            &quot;text&quot;: &quot;\\define sidebarbreakpoint()\n&lt;$text text={{$:/themes/tiddlywiki/vanilla/metrics/sidebarbreakpoint}}/&gt;\n\\end\n\n\\rules only filteredtranscludeinline transcludeinline macrodef macrocallinline macrocallblock\n\n.tc-tiddler-body {\n    margin-top: 0.2em;\n}\n\np {margin-top: 0; }\n.tc-tiddler-body p {}\n\nh1, h2, h3, h4, h5, h6 {margin-top: 0.2em; margin-bottom: 0.25em;font-weight: 400;}\n\nh1 {font-size: 2.0rem;}\n.tc-titlebar h2 {font-size: 1.8rem;} \nh2 {font-size: 1.6rem;}\nh3 {font-size: 1.4rem;}\nh4 {font-size: 1.2rem;}\nh5 {font-size: 1.1rem;}\nh6 {font-size: 1rem;}\n\nh1.tc-site-title {\n    font-family: monospace;\n    font-weight: 500;\n    font-size: 2.0rem;\n}\nh3 + p {\n    margin-top: 1em;\n}\n.tc-titlebar {\n    font-size: 1.8rem;\n}\n.tc-topbar {\ndisplay: flex;\nflex-direction: row;\n}\n\n.tc-topbar-left, .tc-topbar-right {\ntop: 0px;\n}\n\n.tc-topbar-left {\nleft: 0;\nwidth: 100%;\nmargin-right: {{$:/themes/tiddlywiki/vanilla/metrics/sidebarwidth}};\n}\n\n.tc-topbar .tc-page-controls {\npadding: 0 0 5px 5px;\n}\n\n.tc-topbar .tc-page-controls button {\npadding-top: 0;\n}\n\n.tc-topbar-right {\npadding-top: 5px;\n}\n\nsection.story-backdrop {\n    display: grid;\n    grid-template-columns: auto 1fr;\n}\n\nh1.tc-site-title {\n    margin: 0 1rem 0 0;\n}\n\nsection.story-backdrop .tc-site-title {\n    grid-column: 1/2;\n    line-height: 1em;\n    padding-bottom: 1rem;\n}\n\ndiv.tc-site-subtitle {\n    grid-column: 2/3;\n    line-height: 1em;\n    align-self: flex-end;\n    padding-bottom: 1rem;\n}\n\ndiv.tc-page-controls {\n    margin-top: 0;\n}\n\n.tc-topbar button {\n    padding: 0;\n}\n\nspan.tc-topbar.tc-topbar-right svg.tc-image-chevron-right.tc-image-button, span.tc-topbar.tc-topbar-right button.tc-btn-invisible svg.tc-image-chevron-left.tc-image-button\n {\n    height:1.6em;\n    width: 1.6em;\n}\n\n\n.tc-tiddler-frame {\n    border-radius: 10px;\n\tborder: none;\n    margin: 0 0 16px 0;\n}\n\n\n.tc-subtitle {\n    margin-bottom: 0.3em;\n}\n.tc-tab-set.tc-sidebar-tabs-main {\nmargin-right: 1em;\npadding: 0.4em;\nborder-radius: 5px;\n}\n\n.tc-sidebar-lists .tc-tab-buttons button {\n    margin-top: 0.3em;\n     border: none;\n    border-radius: 4px;\n}\n\n.tc-tab-buttons {\n    padding-top: 0; \n    border: none;\n}\n\n\ndiv.tc-tab-buttons.tc-sidebar-tabs-main {\n    padding: 0;\n    }\n\ndiv.tc-tab-content.tc-vertical.tc-sidebar-tabs-more {\n    border: none;\n}\n\n\ndiv.tc-tab-set.tc-sidebar-tabs-main div.tc-tab-buttons.tc-sidebar-tabs-main button.tc-tab-selected, div.tc-more-sidebar div.tc-tab-set.tc-vertical.tc-sidebar-tabs-more div.tc-tab-buttons.tc-vertical.tc-sidebar-tabs-more button {\n    border: none;\n}\n\ndiv.tc-tab-buttons.tc-vertical.tc-sidebar-tabs-more button {\n    border-radius: 5px 0 0 5px;\n}\n\ndiv.tc-search {\n    padding-bottom: 5px;\n}\n\ndiv.tc-timeline div.tc-menu-list-item div.tc-menu-list-subitem a.tc-tiddlylink {\n    white-space: normal;\n    }\n\nblockquote &gt; div {\n    margin-top: .4em;\n    margin-bottom: .4em;\n}\n\ncode {\n    font-size: 0.9em;\n    font-weight: 400;\n    background-color: transparent;\n    border: none;\n    padding: 0;\n}\n\np .tc-tag-list-item {\n    margin-right: 0;\n}\n\np &gt; span &gt; span.tc-tag-label {\n    padding: 0 0.6em 0.05em 0.6em;\n}\n\n@media (min-width: &lt;&lt;sidebarbreakpoint&gt;&gt;) \n{\n\n\nsection.story-backdrop  .tc-site-title {\n    padding: 0 10px 10px 10px;\n}\n.tc-tiddler-frame {\n        padding: 16px 36px 16px 36px;\n\t}\n\n.tc-story-river {\n\t\tpadding: 42px 24px 16px 32px;\n\t}\n\n.tc-sidebar-tab-open {\n    padding-left: 0.4em;\n    }\n\n/*.tc-sidebar-scrollable {\n\t\tmargin: 0 0 0 -24px;\n\t\tpadding: 42px 0 16px 0;\n\t}*/\n\n}   &quot;
+            &quot;text&quot;: &quot;\\define sidebarbreakpoint()\n&lt;$text text={{$:/themes/tiddlywiki/vanilla/metrics/sidebarbreakpoint}}/&gt;\n\\end\n\n\\rules only filteredtranscludeinline transcludeinline macrodef macrocallinline macrocallblock\n\n.tc-tiddler-body {\n    margin-top: 0.2em;\n}\n\np {margin-top: 0; }\n.tc-tiddler-body p {}\n\nh1, h2, h3, h4, h5, h6 {margin-top: 0.2em; margin-bottom: 0.25em;font-weight: 400;}\n\nh1 {font-size: 2.0rem;}\n.tc-titlebar h2 {font-size: 1.8rem;} \nh2 {font-size: 1.6rem;}\nh3 {font-size: 1.4rem;}\nh4 {font-size: 1.2rem;}\nh5 {font-size: 1.1rem;}\nh6 {font-size: 1rem;}\n\nh1.tc-site-title {\n    font-family: monospace;\n    font-weight: 500;\n    font-size: 2.0rem;\n}\nh3 + p {\n    margin-top: 1em;\n}\n.tc-titlebar {\n    font-size: 1.8rem;\n}\n.tc-topbar {\ndisplay: flex;\nflex-direction: row;\n}\n\n.tc-topbar-left, .tc-topbar-right {\ntop: 0px;\n}\n\n.tc-topbar-left {\nleft: 0;\nwidth: 100%;\nmargin-right: {{$:/themes/tiddlywiki/vanilla/metrics/sidebarwidth}};\n}\n\n.tc-topbar .tc-page-controls {\npadding: 0 0 5px 5px;\n}\n\n.tc-topbar .tc-page-controls button {\npadding-top: 0;\n}\n\n.tc-topbar-right {\npadding-top: 5px;\n}\n\nsection.story-backdrop {\n    display: grid;\n    grid-template-columns: auto 1fr;\n}\n\nh1.tc-site-title {\n    margin: 0 1rem 0 0;\n}\n\n.tc-site-title a {\n    text-decoration:none;\n}\n\nsection.story-backdrop .tc-site-title {\n    grid-column: 1/2;\n    line-height: 1em;\n    padding-bottom: 1rem;\n}\n\ndiv.tc-site-subtitle {\n    grid-column: 2/3;\n    line-height: 1em;\n    align-self: flex-end;\n    padding-bottom: 1rem;\n}\n\ndiv.tc-page-controls {\n    margin-top: 0;\n}\n\n.tc-topbar button {\n    padding: 0;\n}\n\nspan.tc-topbar.tc-topbar-right svg.tc-image-chevron-right.tc-image-button, span.tc-topbar.tc-topbar-right button.tc-btn-invisible svg.tc-image-chevron-left.tc-image-button\n {\n    height:1.6em;\n    width: 1.6em;\n}\n\n\n.tc-tiddler-frame {\n    border-radius: 10px;\n\tborder: none;\n    margin: 0 0 16px 0;\n}\n\n\n.tc-subtitle {\n    margin-bottom: 0.3em;\n}\n.tc-tab-set.tc-sidebar-tabs-main {\nmargin-right: 1em;\npadding: 0.4em;\nborder-radius: 5px;\n}\n\n.tc-sidebar-lists .tc-tab-buttons button {\n    margin-top: 0.3em;\n     border: none;\n    border-radius: 4px;\n}\n\n.tc-tab-buttons {\n    padding-top: 0; \n    border: none;\n}\n\n\ndiv.tc-tab-buttons.tc-sidebar-tabs-main {\n    padding: 0;\n    }\n\ndiv.tc-tab-content.tc-vertical.tc-sidebar-tabs-more {\n    border: none;\n}\n\n\ndiv.tc-tab-set.tc-sidebar-tabs-main div.tc-tab-buttons.tc-sidebar-tabs-main button.tc-tab-selected, div.tc-more-sidebar div.tc-tab-set.tc-vertical.tc-sidebar-tabs-more div.tc-tab-buttons.tc-vertical.tc-sidebar-tabs-more button {\n    border: none;\n}\n\ndiv.tc-tab-buttons.tc-vertical.tc-sidebar-tabs-more button {\n    border-radius: 5px 0 0 5px;\n}\n\ndiv.tc-search {\n    padding-bottom: 5px;\n}\n\ndiv.tc-timeline div.tc-menu-list-item div.tc-menu-list-subitem a.tc-tiddlylink {\n    white-space: normal;\n    }\n\nblockquote &gt; div {\n    margin-top: .4em;\n    margin-bottom: .4em;\n}\n\ncode {\n    font-size: 0.9em;\n    font-weight: 400;\n    background-color: transparent;\n    border: none;\n    padding: 0;\n}\n\np .tc-tag-list-item {\n    margin-right: 0;\n}\n\np &gt; span &gt; span.tc-tag-label {\n    padding: 0 0.6em 0.05em 0.6em;\n}\n\n@media (min-width: &lt;&lt;sidebarbreakpoint&gt;&gt;) \n{\n\n\nsection.story-backdrop  .tc-site-title {\n    padding: 0 10px 10px 10px;\n}\n.tc-tiddler-frame {\n        padding: 16px 36px 16px 36px;\n\t}\n\n.tc-story-river {\n\t\tpadding: 42px 24px 16px 32px;\n\t}\n\n.tc-sidebar-tab-open {\n    padding-left: 0.4em;\n    }\n\n/*.tc-sidebar-scrollable {\n\t\tmargin: 0 0 0 -24px;\n\t\tpadding: 42px 0 16px 0;\n\t}*/\n\n}   &quot;
         },
         &quot;$:/palettes/ClutterstackLight&quot;: {
             &quot;title&quot;: &quot;$:/palettes/ClutterstackLight&quot;,
@@ -19318,29 +19321,29 @@ Note that the [[Clutterstack 2020 Theme|$:/themes/can/clutterstack_2020]] styles
 <div created="20210105012044961" dragstarttiddler="Brainstorm over teaser creation" modified="20210105012229736" omniparent="20210105004739652" tags="" title="20210105012044961">
 <pre>One, ''teaser'', in the omniteaser plugin, that uses the ''shortenwikified'' macro which is the export of ''regexteaser.js''.</pre>
 </div>
-<div created="20210130203748186" modified="20210202145944852" omniparent="[[keyboard-driven-input demo makeomni]]" revision="0" tags="" title="20210130203748186" type="text/vnd.tiddlywiki">
+<div created="20210130203748186" modified="20210202211016137" omniparent="[[keyboard-driven-input demo makeomni]]" revision="0" tags="" title="20210130203748186" type="text/vnd.tiddlywiki">
 <pre>A minimal demonstration of the ''keyboard-driven-input'' macro requires: 
 
 1. ''A filter'' whose results depend on the user's text input. &lt;$macrocall $name=modslider ref=&quot;ref2&quot; src=&quot;&quot;&quot;
 
-* This filter is used to generate the options that the user can select from
-* Store this in a field in a tiddler
-* The ''keyboard-driven-input'' macro can use up to two filters, each stored in a field of a tiddler
-* By default, the macro will look for filters in fields called &lt;&lt;.field first-search-filter&gt;&gt; and &lt;&lt;.field second-search-filter&gt;&gt;&quot;&quot;&quot;/&gt;
+* This filter is used to generate the options that the user can select from.
+* Store this in a field in a tiddler.
+* The ''keyboard-driven-input'' macro can use up to two filters, each stored in a field of a tiddler.
+* By default, the macro will look for filters in fields called &lt;&lt;.field first-search-filter&gt;&gt; and &lt;&lt;.field second-search-filter&gt;&gt;.&quot;&quot;&quot;/&gt;
 
 2. ''A filter'' to return the title of the tiddler where the filter(s) described in step 1 can be found. &lt;$macrocall $name=modslider ref=&quot;ref3&quot; src=&quot;&quot;&quot;
 
-* Provide this as a parameter, &lt;&lt;.param configTiddlerFilter&gt;&gt;
+* Provide this as a parameter, &lt;&lt;.param configTiddlerFilter&gt;&gt;.
 * This is a filter, and not a tiddler title, because it allows different filters, stored in different tiddlers, to be used, depending on conditions (e.g. an active tab, or the presence of an optional filter with a default fallback). 
 &quot;&quot;&quot;/&gt;
 
-3. ''Tiddler titles'' to use for store state information in response to input events.&lt;$macrocall ref=&quot;ref1&quot; $name=modslider src=&quot;&quot;&quot;
+3. ''Tiddler titles'' to use for storing state information in response to input events.&lt;$macrocall ref=&quot;ref1&quot; $name=modslider src=&quot;&quot;&quot;
 
 * Provide these as the three following parameters:
 
 ** &lt;&lt;.param tiddler&gt;&gt;: This tiddler gets updated with each keystroke in the ''edit-text'' widget and when the user uses up or down arrows to cycle through filtered results. Depending on which happened more recently, it shows either the typed input or the instantaneous result selection.
 
-** &lt;&lt;.param storeTitle&gt;&gt;: This tiddler reflects the user input by transclusion from the tiddler &lt;&lt;.param tiddler&gt;&gt; after each keystroke into the ''edit-text'' widget.
+** &lt;&lt;.param storeTitle&gt;&gt;: This tiddler reflects the user input by transcluding it from the tiddler &lt;&lt;.param tiddler&gt;&gt; after each keystroke into the ''edit-text'' widget.
 
 ** &lt;&lt;.param selectionStateTitle&gt;&gt;: This tiddler is updated with text comprised of the user's instantaneous selection and a suffix that indicates whether it came from the primary filter or the secondary filter list.
 
@@ -19781,22 +19784,18 @@ Also: [[Environment variables for TiddlyWiki]]</pre>
 <div created="20210131043724146" first-search-filter="[!is[system]search:title&lt;userInput&gt;sort[]]" modified="20210201041046179" revision="0" tags="" title="kdi-demo3-configtid" type="text/vnd.tiddlywiki">
 <pre></pre>
 </div>
-<div created="20210201215619012" modified="20210202150338166" title="kdi-demo3-selectionStateTitle">
-<pre>Move sidebar tabs into the More tab-primaryList</pre>
-</div>
 <div created="20210201215615170" modified="20210202194617054" title="kdi-demo3-storeTitle">
 <pre></pre>
 </div>
 <div created="20210201215615167" modified="20210202194617052" title="kdi-demo3-tiddler">
 <pre></pre>
 </div>
-<div created="20210201043034113" modified="20210202155858989" revision="0" title="keyboard-driven-input-intro" type="text/vnd.tiddlywiki">
+<div created="20210201043034113" modified="20210202210442486" revision="0" title="keyboard-driven-input-intro" type="text/vnd.tiddlywiki">
 <pre>&lt;can-post&gt;
 
-The ''keyboard-driven-input'' macro allows a filtered list to dynamically adapt to text entered in an input element, and allows for navigation through, and selection from, the list using the keyboard.
+The ''keyboard-driven-input'' macro allows a filtered list to dynamically adapt to text entered in an input element. It wraps an &lt;&lt;.wid edit-text&gt;&gt; widget with &lt;&lt;.wid keyboard&gt;&gt; widgets to allow navigation through the list using up and down keys, and confirmation or cancelling by keyboard shortcuts.
 
-
-&lt;can-aside class=&quot;can-aside&quot; style=&quot;grid-rows: span 5;&quot;&gt;
+&lt;can-aside class=&quot;can-aside&quot; style=&quot;grid-row: span 2&quot;&gt;
 
 References:
 &lt;hr&gt;
@@ -19805,9 +19804,9 @@ https://tiddlywiki.com/#keyboard-driven-input%20Macro
 https://tiddlywiki.com/#EditTextWidget
 &lt;/can-aside&gt;
 
-It wraps an &lt;&lt;.wid edit-text&gt;&gt; widget with &lt;&lt;.wid keyboard&gt;&gt; widgets to allow navigation through a list of options using up and down keys and confirmation or cancelling by keyboard shortcuts.
+It does not generate a popup/dropdown showing the list of matches. Any visualisation of the filtered options list, and actions to be taken on selection of an option, are to be built to suit the use-case.
 
-
+''keyboard-driven-input'' can be seen in action as part of various core features in TiddlyWiki, e.g.: the ''tag-picker'' macro, the search feature, and the ''link'' macro in the editor.
 
 &lt;can-aside class=&quot;can-aside&quot;&gt; 
 
@@ -19819,9 +19818,6 @@ It wraps an &lt;&lt;.wid edit-text&gt;&gt; widget with &lt;&lt;.wid keyboard&gt;
 
 &lt;/can-aside&gt;
 
-It does not generate a popup/dropdown showing the list of matches. Any visualisation of the filtered options list, and actions to be taken on selection of an option, are to be built to suit the use-case.
-
-''keyboard-driven-input'' can be seen in action as part of various core features in TiddlyWiki, e.g.: the ''tag-picker'' macro, the search feature, and the ''link'' macro in the editor.
 &lt;/can-post&gt;</pre>
 </div>
 <div created="20201105173254737" list="20201127013515670 20201127013655305 [[Tagbrowse bugs]]" modified="20201202200609829" omnibus-mode="read" showmodestate="hide" tags="omnibus" title="Known issues" toc-view-tiddler="20201105051811194" type="text/vnd.tiddlywiki">
@@ -19836,14 +19832,14 @@ It does not generate a popup/dropdown showing the list of matches. Any visualisa
 <div created="20201125230956352" modified="20201125231009550" tags="" title="Latest posts" type="text/vnd.tiddlywiki">
 <pre>{{Latest posts template}}</pre>
 </div>
-<div created="20201119180406932" modified="20201231040942471" tags="infrastructure" title="Latest posts template" type="text/vnd.tiddlywiki">
+<div created="20201119180406932" modified="20210202211856554" tags="infrastructure" title="Latest posts template" type="text/vnd.tiddlywiki">
 <pre>\define can-latest-posts(limit:&quot;5&quot;,format:&quot;YYYY MMM DD&quot;,subfilter:&quot;&quot;)
 &lt;div class=&quot;tc-timeline&quot;&gt;
 	&lt;$list filter=&quot;[all[tiddlers]tag[post]$subfilter$!sort[created]limit[$limit$]] &quot;&gt;
 		&lt;div class=&quot;tc-menu-list-subitem&quot;&gt;
 			&lt;h2&gt;&lt;$link to={{!!title}}&gt;&lt;/$link&gt;&lt;/h2&gt;
 			&lt;div class=&quot;tc-subtitle&quot;&gt;&lt;$view field=&quot;created&quot; format=&quot;date&quot; template=&quot;$format$&quot;/&gt;&lt;/div&gt;
-			&lt;&lt;teaser chars:300, maxelements:1&gt;&gt;
+			&lt;!--&lt;&lt;teaser chars:300, maxelements:1&gt;&gt;--&gt;
 		&lt;/div&gt;
 	&lt;/$list&gt;
 &lt;/div&gt;
